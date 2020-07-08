@@ -1,8 +1,8 @@
 export class Project {
   id: number | undefined;
-  name: string = '';
-  description: string = '';
-  imageUrl: string = '';
+  name: string = "";
+  description: string = "";
+  imageUrl: string = "";
   contractTypeId: number | undefined;
   contractSignedOn: Date = new Date();
   budget: number = 0;
