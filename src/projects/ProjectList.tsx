@@ -8,16 +8,20 @@ interface ProjectListProps {
 }
 
 interface ProjectListState {
-  editedProject: Project | {};
+  projectBeingEdited: Project | {};
 }
 
 export default function ProjectList(props: ProjectListProps) {
   const [state, setState] = useState<ProjectListState>({
-    editedProject: {},
+    projectBeingEdited: {},
   });
 
   const handleEdit = (project: Project) => {
-    setState({ editedProject: project });
+    setState({ projectBeingEdited: project });
+  };
+
+  const handleCancel = () => {
+    setState({ projectBeingEdited: {} });
   };
 
   return (
@@ -25,10 +29,10 @@ export default function ProjectList(props: ProjectListProps) {
       {props.projects.map((project, index) => {
         return (
           <div key={index} className="cols-sm">
-            {project !== state.editedProject ? (
+            {project !== state.projectBeingEdited ? (
               <ProjectCard key={index} project={project} onEdit={handleEdit} />
             ) : (
-              <ProjectForm project={project} />
+              <ProjectForm project={project} onCancel={handleCancel} />
             )}
           </div>
         );

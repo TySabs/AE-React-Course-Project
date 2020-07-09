@@ -3,10 +3,11 @@ import { Project } from "./Project";
 
 interface ProjectFormProps {
   project: Project;
+  onCancel: () => void;
 }
 
 export default function ProjectForm(props: ProjectFormProps) {
-  const { project } = props;
+  const { project, onCancel } = props;
   return (
     <form className="input-group vertical">
       <label htmlFor="name">Project Name</label>
@@ -15,6 +16,7 @@ export default function ProjectForm(props: ProjectFormProps) {
         name="name"
         placeholder="enter name"
         value={project.name}
+        readOnly
       />
       <label htmlFor="description">Project Description</label>
 
@@ -28,7 +30,7 @@ export default function ProjectForm(props: ProjectFormProps) {
       <div className="input-group">
         <button className="primary bordered medium">Save</button>
         <span></span>
-        <button type="button" className="bordered medium">
+        <button onClick={onCancel} type="button" className="bordered medium">
           cancel
         </button>
       </div>
