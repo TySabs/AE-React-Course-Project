@@ -11,6 +11,11 @@ interface ProjectCardProps {
 
 function ProjectCard(props: ProjectCardProps) {
   const { project } = props;
+
+  const handleEditClick = (projectBeingEdited: Project) => {
+    console.log("Edited Project", projectBeingEdited);
+  };
+
   return (
     <div className="card">
       <img src={project.imageUrl} alt={project.name} />
@@ -19,7 +24,13 @@ function ProjectCard(props: ProjectCardProps) {
           <strong>{project.name}</strong>
         </h5>
         <p>{formatDescription(project.description)}</p>
-        <p>Budget : ${project.budget.toLocaleString()}</p>
+        <p>
+          Budget : ${project.budget.toLocaleString()}
+          <button className="bordered" onClick={() => handleEditClick(project)}>
+            <span className="icon-edit"></span>
+            Edit
+          </button>
+        </p>
       </section>
     </div>
   );
