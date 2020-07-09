@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { Project } from "./Project";
 
 interface ProjectFormProps {
@@ -7,42 +7,96 @@ interface ProjectFormProps {
   onCancel: () => void;
 }
 
-export default function ProjectForm(props: ProjectFormProps) {
-  const { project, onSave, onCancel } = props;
+interface ProjectFormState {
+  project: Project;
+}
 
-  const handleSubmit = (event: SyntheticEvent) => {
-    event.preventDefault();
-    onSave(new Project({ ...project, name: `Updated ${project.name}` }));
+export default class ProjectForm extends React.Component<
+  ProjectFormProps,
+  ProjectFormState
+> {
+  state = {
+    project: this.props.project,
   };
 
-  return (
-    <form className="input-group vertical" onSubmit={handleSubmit}>
-      <label htmlFor="name">Project Name</label>
-      <input
-        type="text"
-        name="name"
-        placeholder="enter name"
-        value={project.name}
-        readOnly
-      />
-      <label htmlFor="description">Project Description</label>
+  handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+    this.props.onSave(this.state.project);
+  };
 
-      <textarea name="description" placeholder="enter description"></textarea>
-      <label htmlFor="budget">Project Budget</label>
+  handleChange = (event: any) => {
+    const { type, name, value, checked } = event.target;
+    let updatedValue = type === "checkbox" ? checked : value;
+    if (type === "number") {
+      updatedValue = +updatedValue;
+    }
 
-      <input type="number" name="budget" placeholder="enter budget" />
-      <label htmlFor="isActive">Active?</label>
-      <input type="checkbox" name="isActive" />
+    const updatedProject = {
+      [name]: updatedValue,
+    };
 
-      <div className="input-group">
-        <button className="primary bordered medium" onClick={handleSubmit}>
-          Save
-        </button>
-        <span></span>
-        <button onClick={onCancel} type="button" className="bordered medium">
-          cancel
-        </button>
-      </div>
-    </form>
-  );
+    this.setState((previousState: ProjectFormState) => {
+      const newProject = Object.assign(
+        new Project(),
+        previousState.project,
+        updatedProject
+      );
+
+      return { project: newProject };
+    });
+  };
+
+  render() {
+    return (
+      <form className="input-group vertical" onSubmit={this.handleSubmit}>
+        <label htmlFor="name">Project Name</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="enter name"
+          value={this.state.project.name}
+          onChange={this.handleChange}
+        />
+
+        <label htmlFor="description">Project Description</label>
+        <textarea
+          name="description"
+          placeholder="enter description"
+          value={this.state.project.description}
+          onChange={this.handleChange}
+        ></textarea>
+
+        <label htmlFor="budget">Project Budget</label>
+        <input
+          type="number"
+          name="budget"
+          placeholder="enter budget"
+          value={this.state.project.budget}
+          onChange={this.handleChange}
+        />
+
+        <label htmlFor="isActive">Active?</label>
+        <input
+          type="checkbox"
+          name="isActive"
+          checked={this.state.project.isActive}
+          onChange={this.handleChange}
+        />
+
+        <div className="input-group">
+          <button className="primary bordered medium" type="submit">
+            Save
+          </button>
+          <span></span>
+          <button
+            onClick={this.props.onCancel}
+            type="button"
+            className="bordered medium"
+          >
+            cancel
+          </button>
+        </div>
+      </form>
+    );
+  }
 }
