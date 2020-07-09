@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent } from "react";
 import { Project } from "./Project";
 
 interface ProjectFormProps {
@@ -9,6 +9,7 @@ interface ProjectFormProps {
 
 interface ProjectFormState {
   project: Project;
+  errors: any;
 }
 
 export default class ProjectForm extends React.Component<
@@ -17,10 +18,14 @@ export default class ProjectForm extends React.Component<
 > {
   state = {
     project: this.props.project,
+    errors: { name: "", description: "", budget: "" },
   };
 
   handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
+    if (!this.isValid()) {
+      return;
+    }
     this.props.onSave(this.state.project);
   };
 
@@ -42,8 +47,36 @@ export default class ProjectForm extends React.Component<
         updatedProject
       );
 
-      return { project: newProject };
+      const errors = this.validate(newProject);
+
+      return { project: newProject, errors };
     });
+  };
+
+  validate = (project: Project) => {
+    let errors: any = { name: "", description: "", budget: "" };
+    if (project.name.length === 0) {
+      errors.name = "Name is required";
+    }
+    if (project.name.length > 0 && project.name.length < 3) {
+      errors.name = "Name needs to be at least 3 characters.";
+    }
+    if (project.description.length === 0) {
+      errors.description = "Description is required.";
+    }
+    if (project.budget === 0) {
+      errors.budget = "Budget must be more than $0.";
+    }
+    return errors;
+  };
+
+  isValid = () => {
+    const { errors } = this.state;
+    return (
+      errors.name.length === 0 &&
+      errors.description.length === 0 &&
+      errors.budget.length === 0
+    );
   };
 
   render() {
@@ -58,6 +91,12 @@ export default class ProjectForm extends React.Component<
           onChange={this.handleChange}
         />
 
+        {this.state.errors.name.length > 0 && (
+          <div className="card error">
+            <p>{this.state.errors.name}</p>
+          </div>
+        )}
+
         <label htmlFor="description">Project Description</label>
         <textarea
           name="description"
@@ -65,6 +104,12 @@ export default class ProjectForm extends React.Component<
           value={this.state.project.description}
           onChange={this.handleChange}
         ></textarea>
+
+        {this.state.errors.description.length > 0 && (
+          <div className="card error">
+            <p>{this.state.errors.description}</p>
+          </div>
+        )}
 
         <label htmlFor="budget">Project Budget</label>
         <input
@@ -74,6 +119,12 @@ export default class ProjectForm extends React.Component<
           value={this.state.project.budget}
           onChange={this.handleChange}
         />
+
+        {this.state.errors.budget.length > 0 && (
+          <div className="card error">
+            <p>{this.state.errors.budget}</p>
+          </div>
+        )}
 
         <label htmlFor="isActive">Active?</label>
         <input
