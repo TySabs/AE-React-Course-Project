@@ -12,7 +12,7 @@ export default function ProjectForm(props: ProjectFormProps) {
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
-    onSave(new Project({ name: `Updated ${project.name}` }));
+    onSave(new Project({ ...project, name: `Updated ${project.name}` }));
   };
 
   return (
