@@ -1,10 +1,21 @@
 import React from "react";
+import { Project } from "./Project";
 
-export default function ProjectForm() {
+interface ProjectFormProps {
+  project: Project;
+}
+
+export default function ProjectForm(props: ProjectFormProps) {
+  const { project } = props;
   return (
     <form className="input-group vertical">
       <label htmlFor="name">Project Name</label>
-      <input type="text" name="name" placeholder="enter name" />
+      <input
+        type="text"
+        name="name"
+        placeholder="enter name"
+        value={project.name}
+      />
       <label htmlFor="description">Project Description</label>
 
       <textarea name="description" placeholder="enter description"></textarea>
