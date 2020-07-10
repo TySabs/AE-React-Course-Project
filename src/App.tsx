@@ -8,6 +8,7 @@ import {
 import "./App.css";
 import HomePage from "./home/HomePage";
 import ProjectsPage from "./projects/ProjectsPage";
+import ProjectPage from "./projects/ProjectPage";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <Switch>
           <Route path="/" exact component={HomePage} />
           <Route path="/projects" exact component={ProjectsPage} />
+          <Route path="/projects/:id" component={ProjectPage} />
         </Switch>
       </div>
     </Router>
