@@ -6,7 +6,6 @@ import ProjectForm from "./ProjectForm";
 interface ProjectListProps {
   projects: Project[];
   onSave: (project: Project) => void;
-  loading: boolean;
 }
 
 interface ProjectListState {
@@ -14,7 +13,7 @@ interface ProjectListState {
 }
 
 export default function ProjectList(props: ProjectListProps) {
-  const { projects, onSave, loading } = props;
+  const { projects, onSave } = props;
   const [state, setState] = useState<ProjectListState>({
     projectBeingEdited: {},
   });

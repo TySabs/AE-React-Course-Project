@@ -73,7 +73,7 @@ export default function ProjectsPage() {
         <button
           className="primary"
           onClick={() => decrementPage(currentPage)}
-          disabled={loading || currentPage == 1}
+          disabled={loading || currentPage === 1}
         >
           Previous Page
         </button>
@@ -99,7 +99,7 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
-      <ProjectList projects={projects} onSave={saveProject} loading={loading} />
+      <ProjectList projects={projects} onSave={saveProject} />
 
       {loading ? (
         <div className="center-page">
