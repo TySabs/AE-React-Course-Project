@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import ProjectList from "./ProjectList";
-import { Project } from "./Project";
 import Axios, { AxiosError } from "axios";
+import React, { useEffect, useState } from "react";
+import Project from "./Project";
+import ProjectList from "./ProjectList";
 
 const baseUrl = "http://localhost:4000";
+const pageSize = 10;
+const maxPage = 100 / pageSize;
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -11,18 +13,24 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const limit = 10;
-  const maxPage = 100 / limit;
-
   useEffect(() => {
-    setLoading(true);
-    loadProjects(currentPage);
+    getProjects();
   }, []);
 
-  const loadProjects = (pageNum: number) => {
-    getProjects(pageNum)
+  const getProjects = (page: number = currentPage) => {
+    const url = `${baseUrl}/projects`;
+    const params = {
+      _page: page,
+      _limit: pageSize,
+      _sort: "name",
+    };
+    const config = { params };
+
+    setLoading(true);
+
+    Axios.get<Project[]>(url, config)
       .then((res) => {
-        setProjects(res);
+        setProjects(res.data);
         setLoading(false);
       })
       .catch((e: AxiosError) => {
@@ -31,34 +39,31 @@ export default function ProjectsPage() {
       });
   };
 
-  const getProjects = (page: number) => {
-    const url = `${baseUrl}/projects`;
-    const params = {
-      _page: page,
-      _limit: limit,
-      _sort: "name",
-    };
-    return Axios.get<Project[]>(url, { params }).then((res) => res.data);
+  const updateProjects = (updatedProject: Project) => {
+    const url = `${baseUrl}/projects/${updatedProject.id}`;
+    Axios.put<Project[]>(url, updatedProject)
+      .then(() => {
+        getProjects();
+      })
+      .catch((e: AxiosError) => {
+        setError(e.message);
+      });
   };
 
   const incrementPage = (pageNum: number) => {
     const nextPage = pageNum + 1;
     setCurrentPage(nextPage);
-    loadProjects(nextPage);
+    getProjects(nextPage);
   };
 
   const decrementPage = (pageNum: number) => {
     const previousPage = pageNum - 1;
     setCurrentPage(previousPage);
-    loadProjects(previousPage);
+    getProjects(previousPage);
   };
 
   const saveProject = (updatedProject: Project) => {
-    const updatedProjects = projects.map((project) => {
-      return project.id === updatedProject.id ? updatedProject : project;
-    });
-
-    setProjects(updatedProjects);
+    updateProjects(updatedProject);
   };
 
   return (
@@ -66,18 +71,21 @@ export default function ProjectsPage() {
       <h1>Projects</h1>
       <div className="row">
         <button
+          className="primary"
           onClick={() => decrementPage(currentPage)}
           disabled={loading || currentPage == 1}
         >
           Previous Page
         </button>
         <button
+          className="primary"
           onClick={() => incrementPage(currentPage)}
           disabled={loading || currentPage === maxPage}
         >
           Next Page
         </button>
       </div>
+
       {error ? (
         <div className="row">
           <div className="card large error">

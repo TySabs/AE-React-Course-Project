@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import { Project } from "./Project";
+import Project from "./Project";
 
 interface ProjectFormProps {
   project: Project;

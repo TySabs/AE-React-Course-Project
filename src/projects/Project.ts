@@ -1,4 +1,4 @@
-export class Project {
+export default class Project {
   id: number | undefined;
   name: string = "";
   description: string = "";
